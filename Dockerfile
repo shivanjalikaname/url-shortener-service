@@ -17,7 +17,12 @@ RUN groupadd --system app && useradd --system --gid app --no-create-home app
 WORKDIR /app
 
 COPY --from=build /wheels /wheels
-RUN pip install --no-cache-dir /wheels/* && rm -rf /wheels
+# pip is only needed to install; dropping it removes its vendored libraries
+# (urllib3, msgpack, pkg_resources) from the runtime image and scan results
+RUN pip install --no-cache-dir /wheels/* \
+    && rm -rf /wheels \
+    && python -m pip uninstall -y pip \
+    && rm -rf /usr/local/lib/python3.13/ensurepip /usr/local/bin/pip*
 COPY app ./app
 
 USER app
