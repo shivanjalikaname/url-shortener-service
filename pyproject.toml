@@ -16,4 +16,5 @@ ignore = ["S104"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-q --cov=app --cov-report=term-missing --cov-fail-under=90"
